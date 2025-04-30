@@ -1,6 +1,5 @@
-import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { Folder, KeyIcon, LayoutDashboard, ScrollTextIcon, UserCog, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { Folder, LayoutDashboard, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {

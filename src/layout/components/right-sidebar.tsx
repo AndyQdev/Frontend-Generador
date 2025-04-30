@@ -45,26 +45,37 @@ export default function RightSidebar() {
   }
 
   function selectTitleIcon(iconName: string) {
-    setSelectedComponent({ ...selectedComponent, titleIcon: iconName })
+    if (selectedComponent?.type === 'sidebar') {
+      setSelectedComponent({
+        ...selectedComponent,
+        titleIcon: iconName
+      })
+    }
     setIsTitleIconPickerOpen(false)
   }
   function selectIcon(iconName: string) {
-    if (currentIconIndex === null) return
-    const updatedSections = [...selectedComponent.sections]
-    updatedSections[currentIconIndex].icon = iconName
-    setSelectedComponent({ ...selectedComponent, sections: updatedSections })
+    if (selectedComponent?.type === 'sidebar' && currentIconIndex !== null) {
+      const updatedSections = [...selectedComponent.sections]
+      updatedSections[currentIconIndex].icon = iconName
+      setSelectedComponent({
+        ...selectedComponent,
+        sections: updatedSections
+      })
+    }
     setIsIconPickerOpen(false)
   }
 
-  function updateSectionLabel(index: number, label: string) {
-    const updatedSections = [...selectedComponent.sections]
-    updatedSections[index].label = label
-    setSelectedComponent({ ...selectedComponent, sections: updatedSections })
-  }
-
   function addNewSection() {
-    const updatedSections = [...selectedComponent.sections, { icon: 'star', label: 'Nueva Sección', route: '/' }]
-    setSelectedComponent({ ...selectedComponent, sections: updatedSections })
+    if (selectedComponent?.type === 'sidebar') {
+      const updatedSections = [
+        ...selectedComponent.sections,
+        { icon: 'star', label: 'Nueva Sección', route: '/' }
+      ]
+      setSelectedComponent({
+        ...selectedComponent,
+        sections: updatedSections
+      })
+    }
   }
   const [isComponentsOpen, setIsComponentsOpen] = useState(true)
   const [isHerramientaOpen, setIsHerramientaOpen] = useState(true)
@@ -135,7 +146,7 @@ export default function RightSidebar() {
               }}
             >
               <SquareMousePointerIcon size={16} />
-              <span className="text-sm">Listar</span>
+              <span className="text-sm">CRUD</span>
             </div>
               {/* Header */}
             <div
@@ -1331,11 +1342,13 @@ export default function RightSidebar() {
                                       value={field.type.placeholder ?? ''}
                                       onChange={(e) => {
                                         const fields = [...selectedComponent.dialog.fields]
-                                        fields[idx].type.placeholder = e.target.value
-                                        setSelectedComponent({
-                                          ...selectedComponent,
-                                          dialog: { ...selectedComponent.dialog, fields }
-                                        })
+                                        if (fields[idx].type.type === 'input') { // Verifica que sea de tipo 'input'
+                                          (fields[idx].type).placeholder = e.target.value
+                                          setSelectedComponent({
+                                            ...selectedComponent,
+                                            dialog: { ...selectedComponent.dialog, fields }
+                                          })
+                                        }
                                       }}
                                       className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm"
                                     />
@@ -1354,22 +1367,26 @@ export default function RightSidebar() {
                                           value={option}
                                           onChange={(e) => {
                                             const fields = [...selectedComponent.dialog.fields]
-                                            fields[idx].type.options[optIdx] = e.target.value
-                                            setSelectedComponent({
-                                              ...selectedComponent,
-                                              dialog: { ...selectedComponent.dialog, fields }
-                                            })
+                                            if (fields[idx].type.type === 'select') { // Verifica que sea de tipo 'select'
+                                              (fields[idx].type).options[optIdx] = e.target.value
+                                              setSelectedComponent({
+                                                ...selectedComponent,
+                                                dialog: { ...selectedComponent.dialog, fields }
+                                              })
+                                            }
                                           }}
                                           className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm"
                                         />
                                         <button
                                           onClick={() => {
                                             const fields = [...selectedComponent.dialog.fields]
-                                            fields[idx].type.options.splice(optIdx, 1)
-                                            setSelectedComponent({
-                                              ...selectedComponent,
-                                              dialog: { ...selectedComponent.dialog, fields }
-                                            })
+                                            if (fields[idx].type.type === 'select') { // Verifica que sea de tipo 'select'
+                                              (fields[idx].type).options.splice(optIdx, 1)
+                                              setSelectedComponent({
+                                                ...selectedComponent,
+                                                dialog: { ...selectedComponent.dialog, fields }
+                                              })
+                                            }
                                           }}
                                           className="text-red-600 hover:text-red-800"
                                           title="Eliminar opción"
@@ -1381,11 +1398,13 @@ export default function RightSidebar() {
                                     <button
                                       onClick={() => {
                                         const fields = [...selectedComponent.dialog.fields]
-                                        fields[idx].type.options.push('Nueva opción')
-                                        setSelectedComponent({
-                                          ...selectedComponent,
-                                          dialog: { ...selectedComponent.dialog, fields }
-                                        })
+                                        if (fields[idx].type.type === 'select') { // Verifica que sea de tipo 'select'
+                                          (fields[idx].type).options.push('Nueva opción')
+                                          setSelectedComponent({
+                                            ...selectedComponent,
+                                            dialog: { ...selectedComponent.dialog, fields }
+                                          })
+                                        }
                                       }}
                                       className="text-sm text-blue-600 hover:underline"
                                     >
@@ -1525,11 +1544,16 @@ export default function RightSidebar() {
                 <button
                   key={iconName}
                   onClick={() => {
-                    const updated = [...selectedComponent.buttons]
-                    updated[editingHeaderButtonIndex].icon = iconName
-                    setSelectedComponent({ ...selectedComponent, buttons: updated })
-                    setIsHeaderButtonIconPickerOpen(false)
-                    setEditingHeaderButtonIndex(null)
+                    if (selectedComponent?.type === 'header' && editingHeaderButtonIndex !== null) {
+                      const updated = [...selectedComponent.buttons]
+                      updated[editingHeaderButtonIndex].icon = iconName
+                      setSelectedComponent({
+                        ...selectedComponent,
+                        buttons: updated
+                      })
+                      setIsHeaderButtonIconPickerOpen(false)
+                      setEditingHeaderButtonIndex(null)
+                    }
                   }}
                   className="text-2xl hover:text-purple-500"
                 >

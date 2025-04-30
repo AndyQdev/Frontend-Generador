@@ -44,10 +44,12 @@ const LoginPage = (): JSX.Element => {
   })
 
   const onLogin = (data: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     void signWithEmailPassword(data)
   }
 
   const onRegister = (data: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     void registerWithEmailPassword(data)
   }
 

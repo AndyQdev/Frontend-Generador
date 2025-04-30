@@ -26,7 +26,7 @@ const Pagination = ({ allItems, currentItems = 0, limit, offset, newPage, prevPa
       <span
         className="text-sm font-normal text-primary text-light-text-secondary dark:text-dark-text-secondary mb-4 md:mb-0 block w-full md:inline md:w-auto"
       >
-        Mostrando <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">{offset + 1}-{(offset + currentItems) ?? limit}</span> de <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">{allItems}</span>
+        Mostrando <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">{offset + 1}-{offset + currentItems}</span> de <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">{allItems}</span>
       </span>
       <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8  rounded-md overflow-hidden border ">
         <li>

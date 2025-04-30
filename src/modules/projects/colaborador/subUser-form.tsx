@@ -148,7 +148,7 @@ const UserFormDialog = ({ setOpenModal, mutate }: IUserFormProps) => {
                   const selectedIds = field.value ?? [] // array de strings
                   // Función para agregar o quitar un ID
                   const toggleId = (id: string) => {
-                    if (selectedIds.includes(id)) {
+                    if (selectedIds.includes(Number(id))) {
                       field.onChange(selectedIds.filter((item) => item !== Number(id)))
                     } else {
                       field.onChange([...selectedIds, id])
@@ -190,7 +190,7 @@ const UserFormDialog = ({ setOpenModal, mutate }: IUserFormProps) => {
                                 <CommandEmpty>No encontrado</CommandEmpty>
                                 <CommandGroup>
                                   {projects?.map((col) => {
-                                    const isSelected = selectedIds.includes(col.id)
+                                    const isSelected = selectedIds.includes(Number(col.id))
                                     return (
                                       <CommandItem
                                         key={col.id}
@@ -222,7 +222,7 @@ const UserFormDialog = ({ setOpenModal, mutate }: IUserFormProps) => {
                         {selectedIds.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-2">
                             {selectedIds.map((id) => {
-                              const col = projects?.find((c) => c.id === id)
+                              const col = projects?.find((c) => Number(c.id) === id)
                               if (!col) return null
                               return (
                                 <Badge
@@ -235,7 +235,7 @@ const UserFormDialog = ({ setOpenModal, mutate }: IUserFormProps) => {
                                     onClick={(e) => {
                                       e.preventDefault()
                                       e.stopPropagation()
-                                      toggleId(id)
+                                      toggleId(id.toString())
                                     }}
                                   >
                                     <X className="w-3 h-3" />

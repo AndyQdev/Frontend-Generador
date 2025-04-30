@@ -10,7 +10,7 @@ import { type Dispatch, type SetStateAction } from 'react'
 import { type ApiResponse } from '@models/index'
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
 import { cn } from '@/lib/utils'
-import { useCreateResource, useGetResource } from '@/hooks/useApiResource'
+import { useGetResource } from '@/hooks/useApiResource'
 import { type User } from '../models/user.model'
 import { ENDPOINTS } from '@/utils'
 import { CheckCheckIcon, ChevronsUpDownIcon, X } from 'lucide-react'
@@ -18,7 +18,6 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Textarea } from '@/components/ui/textarea'
 // import MultiSelectUser from './components/multiSelectUser'
 import { Badge } from '@/components/ui/badge'
-import { type CreateProject } from '../models/project.model'
 import { toast } from 'sonner'
 import { type KeyedMutator } from 'swr'
 import { PrivateRoutes } from '@/models/routes.model'
@@ -51,9 +50,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
   // const { allResource: branches } = useGetAllResource<Branch>({ endpoint: ENDPOINTS.BRANCH })
   const userStorage = JSON.parse(localStorage.getItem('user') ?? '{}')
   const { resource: user } = useGetResource<User>({ endpoint: ENDPOINTS.USER, id: userStorage.id })
-  const { createResource: createProject } = useCreateResource<CreateProject>({
-    endpoint: ENDPOINTS.PROJECTS
-  })
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,6 +69,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
         formData.append('colaboradorId', data.colaboradorId.join(',')) // enviamos como string separado
       }
       if (data.archivoXml?.[0]) { // Porque Input file devuelve array de files
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         formData.append('archivo_xml', data.archivoXml[0])
       }
 
@@ -128,7 +126,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
                   const selectedIds = field.value ?? [] // array de strings
                   // Función para agregar o quitar un ID
                   const toggleId = (id: string) => {
-                    if (selectedIds.includes(id)) {
+                    if (selectedIds.includes(Number(id))) {
                       field.onChange(selectedIds.filter((item) => item !== Number(id)))
                     } else {
                       field.onChange([...selectedIds, id])
@@ -170,7 +168,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
                                 <CommandEmpty>No encontrado</CommandEmpty>
                                 <CommandGroup>
                                   {user?.colaboradores?.map((col) => {
-                                    const isSelected = selectedIds.includes(col.id)
+                                    const isSelected = selectedIds.includes(Number(col.id))
                                     return (
                                       <CommandItem
                                         key={col.id}
@@ -202,7 +200,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
                         {selectedIds.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-2">
                             {selectedIds.map((id) => {
-                              const col = user?.colaboradores?.find((c) => c.id === id)
+                              const col = user?.colaboradores?.find((c) => Number(c.id) === Number(id))
                               if (!col) return null
                               return (
                                 <Badge
@@ -215,7 +213,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
                                     onClick={(e) => {
                                       e.preventDefault()
                                       e.stopPropagation()
-                                      toggleId(id)
+                                      toggleId(id.toString())
                                     }}
                                   >
                                     <X className="w-3 h-3" />

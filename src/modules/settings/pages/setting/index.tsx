@@ -1,6 +1,5 @@
 import { ModeToggle } from '@/components/mode-toggle'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import ProfileForm from '@/modules/users/pages/profile/components/profile-form'
 
 const SettingPage = (): JSX.Element => {
   return (

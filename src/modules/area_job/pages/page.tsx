@@ -43,6 +43,8 @@ export interface SidebarComponent extends BaseComponent {
 // Componentes que faltan crear ---------------------------------------------------------------
 
 export interface LabelComponent extends BaseComponent {
+  backgroundColor: string
+  route: string
   type: 'label'
   text: string
   fontSize?: string
@@ -228,6 +230,9 @@ export default function Editor() {
       return updatedPages
     })
   }, [selectedPage])
+  function isComponentItem(obj: any): obj is ComponentItem {
+    return obj && typeof obj === 'object' && 'id' in obj && 'type' in obj
+  }
   useEffect(() => {
     if (activeProject?.id) {
       const token = localStorage.getItem('token') // o usa tu contexto de auth
@@ -253,7 +258,11 @@ export default function Editor() {
             const pagesCopy = structuredClone(prevPages)
             const page = pagesCopy.find(p => p.id === pageId)
             if (page) {
-              page.components.push(component)
+              if (isComponentItem(component)) { // Verifica que el componente sea válido
+                page.components.push(component)
+              } else {
+                console.error('El componente recibido no es válido:', component)
+              }
             }
             return pagesCopy
           })
@@ -399,7 +408,7 @@ export default function Editor() {
     const containerRect = e.currentTarget.getBoundingClientRect()
     const x = (e.clientX - containerRect.left) / scale
     const y = (e.clientY - containerRect.top) / scale
-    const newComponent: ComponentItem = (() => {
+    const newComponent = (() => {
       switch (type) {
         case 'button':
           return {
@@ -459,6 +468,7 @@ export default function Editor() {
             ]
           }
         case 'listar':
+          // eslint-disable-next-line no-case-declarations
           const headers = ['Id', 'Nombre', 'Descripción', 'Fecha de creación', 'Estado']
           return {
             id: Date.now().toString(),
@@ -569,6 +579,7 @@ export default function Editor() {
             activeColor: '#3b82f6' // azulito
           }
         case 'login':
+          // eslint-disable-next-line no-case-declarations
           const now = Date.now()
           return {
             id: now.toString(),
@@ -699,8 +710,12 @@ export default function Editor() {
     const updatedPages = [...pages]
     const pageIndex = updatedPages.findIndex((p) => p.id === pageId)
     if (pageIndex !== -1) {
-      updatedPages[pageIndex].components.push(newComponent)
-      setPages(updatedPages)
+      if (isComponentItem(newComponent)) { // Verifica que el componente sea válido
+        updatedPages[pageIndex].components.push(newComponent)
+        setPages(updatedPages)
+      } else {
+        console.error('El componente no es válido:', newComponent)
+      }
     }
   }
 
@@ -761,7 +776,7 @@ export default function Editor() {
     }
   }
 
-  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null)
+  const [, setSelectedComponentId] = useState<string | null>(null)
   const handleDeleteComponent = (id: string) => {
     const updatedPages = [...pages]
     updatedPages[currentPageIndex].components = updatedPages[currentPageIndex].components.filter(

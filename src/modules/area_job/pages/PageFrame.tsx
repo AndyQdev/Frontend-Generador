@@ -47,9 +47,9 @@ export default function PageFrame({
   const toggleSidebar = () => { setIsSidebarOpen(prev => !prev) }
   const [openRowMenu, setOpenRowMenu] = useState<number | null>(null)
   const [formValues, setFormValues] = useState<Record<string, string>>({})
-  const [editRowIndex, setEditRowIndex] = useState<number | null>(null)
+  const [, setEditRowIndex] = useState<number | null>(null)
   const [confirmDeleteRowIndex, setConfirmDeleteRowIndex] = useState<number | null>(null)
-  const { selectedPage, setSelectedPage } = useComponentContext()
+  const { setSelectedPage } = useComponentContext()
   const socket = getSocket()
 
   // 🔸 throttled → 1 frame cada 50 ms ( ≈ 20 fps )
@@ -118,11 +118,11 @@ export default function PageFrame({
               setSelectedComponent(comp)
             }
           }}
-          onDrag={(e, d) => {
+          onDrag={(_e, d) => {
             if (page.id !== currentPageId) return
             emitMove(comp, d.x, d.y) // 👈 envía frame
           }}
-          onResize={(e, direction, ref, delta, position) => {
+          onResize={(_e, _direction, ref, _delta, position) => {
             emitResize(
               comp,
               parseInt(ref.style.width),
@@ -138,7 +138,7 @@ export default function PageFrame({
             }
             isDragging = true
           }}
-          onDragStop={(e, d) => {
+          onDragStop={(_e, d) => {
             isDragging = false
             updateComponent(pageIndex, index, { ...comp, x: d.x, y: d.y })
             const socket = getSocket()
@@ -154,7 +154,7 @@ export default function PageFrame({
               }
             })
           }}
-          onResizeStop={(e, direction, ref, delta, position) => {
+          onResizeStop={(_e, _direction, ref, _delta, position) => {
             updateComponent(
               pageIndex,
               index, {
@@ -218,8 +218,11 @@ export default function PageFrame({
                     />
                   )
                 case 'sidebar':
+                  // eslint-disable-next-line no-case-declarations
                   const titleIcon = comp.titleIcon ?? 'star' // icono del título
+                  // eslint-disable-next-line no-case-declarations
                   const mainColor = comp.mainColor ?? '#a855f7' // color total (color principal)
+                  // eslint-disable-next-line no-case-declarations
                   const asideBg = comp.asideBg ?? '#ffffff' // fondo del aside
                   return (
                     <div className="h-full w-full bg-white overflow-y-auto rounded shadow">
