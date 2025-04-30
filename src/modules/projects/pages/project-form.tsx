@@ -36,7 +36,8 @@ const formSchema = z.object({
     .array(z.number())
     .optional()
     .default([]),
-  archivoXml: z.any().optional()
+  archivoXml: z.any().optional(),
+  imagenBoceto: z.any().optional()
 })
 
 interface IUserFormProps {
@@ -54,9 +55,11 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      descripcion: '',
       name: '',
-      colaboradorId: []
+      descripcion: '',
+      colaboradorId: [],
+      archivoXml: undefined,
+      imagenBoceto: undefined //  🆕
     }
   })
   const navigate = useNavigate()
@@ -72,7 +75,10 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         formData.append('archivo_xml', data.archivoXml[0])
       }
-
+      if (data.imagenBoceto?.[0]) { // 🆕
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        formData.append('imagen_boceto', data.imagenBoceto[0])
+      }
       const response = await fetch(`${import.meta.env.VITE_API_URL}${ENDPOINTS.PROJECTS}`, {
         method: 'POST',
         headers: {
@@ -266,6 +272,23 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
                   </FormItem>
                 )}
               />
+              <FormField
+              control={form.control}
+              name="imagenBoceto"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Boceto (PNG, JPG …) – opcional</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => { field.onChange(e.target.files) }} // ⬅️ muy importante
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             </div>
 
           </div>
