@@ -55,6 +55,11 @@ function Navigation() {
           </Link>
           {status === authStatus.authenticated
             ? MenuSideBar.map((item: MenuHeaderRoute, index) => {
+              const user = JSON.parse(localStorage.getItem('user') ?? '{}')
+              const isAdmin = user?.rol === 'admin'
+              if (item.label === 'Gestionar Proyectos' && !isAdmin) {
+                return null // No renderiza si el usuario no es admin
+              }
               if (item.children && verifyPermission(item.permissions!)) {
                 return (
                   <Collapsible key={index} open={isUsuariosOpen} onOpenChange={setIsUsuariosOpen} className='w-full'>

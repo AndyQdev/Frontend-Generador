@@ -1,4 +1,4 @@
-import { CircleUser, LogOut, Menu, Settings, User } from 'lucide-react'
+import { CircleUser, LogOut, Menu, User } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbS
 import Navigation from './navigation'
 import { useHeader } from '@/hooks/useHeader'
 import { PrivateRoutes } from '@/models/routes.model'
-import { Notificaciones } from './notificaciones'
+import { ModeToggle } from '@/components/mode-toggle'
 
 const Header = () => {
   const { breadcrumb } = useHeader()
@@ -31,7 +31,7 @@ const Header = () => {
         <SheetContent side="left" className="flex flex-col px-0 py-0 gap-0">
           <SheetHeader>
             <div className="flex items-center gap-3 px-4 border-b py-3 h-14">
-              <h1>Mi Gasolinera</h1>
+              <h1>UI SKETCH</h1>
             </div>
           </SheetHeader>
           <Navigation />
@@ -56,7 +56,7 @@ const Header = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <Notificaciones></Notificaciones>
+      <ModeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
@@ -71,13 +71,20 @@ const Header = () => {
             <User className="mr-2 h-4 w-4" />
             Perfil
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>
+          {/* <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>
             <Settings className="mr-2 h-4 w-4" />
             Configuración
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           {/* onClick={signOut} */}
-          <DropdownMenuItem className='cursor-pointer'>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onClick={() => {
+              localStorage.removeItem('token')
+              localStorage.removeItem('user')
+              window.location.reload()
+            }}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Cerrar sesión
           </DropdownMenuItem>

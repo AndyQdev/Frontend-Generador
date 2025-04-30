@@ -140,6 +140,20 @@ export interface LoginComponent extends Omit<BaseComponent, 'label'> {
   googleButton: ButtonComponent
   signupLink: LabelComponent
 }
+export interface ChecklistComponent extends BaseComponent {
+  type: 'checklist'
+  items: Array<{
+    label: string
+    checked: boolean
+  }>
+  title?: string
+}
+export interface RadioButtonComponent extends BaseComponent {
+  type: 'radiobutton'
+  options: string[]
+  selected?: string
+  name?: string // grupo común
+}
 export type ComponentItem =
   | ButtonComponent
   | InputComponent
@@ -151,6 +165,9 @@ export type ComponentItem =
   | ListarComponent
   | HeaderComponent
   | LoginComponent
+  | SelectComponent
+  | ChecklistComponent
+  | RadioButtonComponent
 
 interface Page {
   id: string
@@ -696,6 +713,47 @@ export default function Editor() {
               text: "Don't have an account? Sign up",
               styles: 'text-sm text-gray-600'
             }
+          }
+        case 'select':
+          return {
+            id: Date.now().toString(),
+            type: 'select',
+            x,
+            y,
+            width: 200,
+            height: 40,
+            styles: 'w-full p-2 border border-gray-300 bg-white rounded text-black',
+            options: ['Opción 1', 'Opción 2', 'Opción 3'],
+            value: 'Opción 1'
+          }
+        case 'checklist':
+          return {
+            id: Date.now().toString(),
+            type: 'checklist',
+            x,
+            y,
+            width: 300,
+            height: 200,
+            styles: 'p-4 bg-white rounded shadow space-y-2 text-black',
+            title: 'Tareas Pendientes',
+            items: [
+              { label: 'Tarea 1', checked: false },
+              { label: 'Tarea 2', checked: true },
+              { label: 'Tarea 3', checked: false }
+            ]
+          }
+        case 'radiobutton':
+          return {
+            id: Date.now().toString(),
+            type: 'radiobutton',
+            x,
+            y,
+            width: 300,
+            height: 120,
+            styles: 'space-y-2 p-3 bg-white rounded shadow text-black',
+            options: ['Opción A', 'Opción B', 'Opción C'],
+            selected: 'Opción A',
+            name: `radio-group-${Date.now()}`
           }
         default:
           throw new Error(`Tipo de componente desconocido: ${type}`)

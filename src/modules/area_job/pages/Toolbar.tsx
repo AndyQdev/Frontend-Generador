@@ -1,5 +1,5 @@
 // Toolbar.tsx
-import { Hand, MousePointer, Minus, Plus, CornerDownRight, Save, Download, FilePlus } from 'lucide-react'
+import { Hand, MousePointer, Minus, Plus, Save, Download, FilePlus } from 'lucide-react'
 
 interface ToolbarProps {
   zoom: number // Nivel de zoom actual
@@ -19,7 +19,6 @@ export default function Toolbar({
   setMode,
   zoomIn,
   zoomOut,
-  reset,
   onSubmit,
   handleExport,
   setOpenDlg
@@ -65,17 +64,6 @@ export default function Toolbar({
         title="Acercar"
       >
         <Plus size={18} />
-      </button>
-
-      <div className="w-px h-6 bg-white/20 mx-2" />
-
-      {/* Reset */}
-      <button
-        onClick={reset}
-        className="p-2 rounded-full hover:bg-neutral-700 transition"
-        title="Restablecer zoom"
-      >
-        <CornerDownRight size={18} />
       </button>
 
       <div className="w-px h-6 bg-white/20 mx-2" />

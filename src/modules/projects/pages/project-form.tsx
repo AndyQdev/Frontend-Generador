@@ -278,7 +278,7 @@ const UserFormDialog = ({ setOpenModal }: IUserFormProps) => {
               </Button>
             </AlertDialogCancel>
             <Button type="submit" size="sm">
-              Crear Usuario
+              Crear Proyecto
             </Button>
           </AlertDialogFooter>
         </form>

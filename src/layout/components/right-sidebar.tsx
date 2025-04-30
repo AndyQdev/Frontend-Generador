@@ -115,6 +115,38 @@ export default function RightSidebar() {
                 <FileInputIcon size={16} />
                 <span className="text-sm">Input</span>
               </div>
+
+              {/* Select */}
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded border border-cyan-500 bg-cyan-50 text-cyan-800 cursor-move"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('component/type', 'select')
+                }}
+              >
+                <SquareMousePointerIcon size={16} />
+                <span className="text-sm">Select</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded border border-lime-500 bg-lime-50 text-lime-800 cursor-move"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('component/type', 'checklist')
+                }}
+              >
+                <SquareMousePointerIcon size={16} />
+                <span className="text-sm">Checklist</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded border border-orange-500 bg-orange-50 text-orange-800 cursor-move"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('component/type', 'radiobutton')
+                }}
+              >
+                <SquareMousePointerIcon size={16} />
+                <span className="text-sm">RadioButton</span>
+              </div>
               {/* Sidebar */}
               <div
                 className="flex items-center gap-2 px-3 py-2 rounded border border-purple-500 bg-purple-50 text-purple-800 cursor-move"
@@ -436,7 +468,7 @@ export default function RightSidebar() {
                             + Agregar sección
                           </Button>
                         </div>
-                        <div className='h-52'>
+                        <div className='h-72'>
                         </div>
 
                       </div>
@@ -824,7 +856,7 @@ export default function RightSidebar() {
                             </Button>
                           </div>
                         </div>
-                        <div className='h-52'>
+                        <div className='h-72'>
                         </div>
                       </div>
                     )}
@@ -959,11 +991,205 @@ export default function RightSidebar() {
                             />
                           </div>
                         </div>
-                        <div className='h-52'>
+                        <div className='h-72'>
+                        </div>
+                      </div>
+                    )}
+                    {selectedComponent.type === 'checklist' && (
+                      <div className="space-y-4">
+
+                        {/* Título */}
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-gray-600 dark:text-gray-300 w-28">Título:</label>
+                          <input
+                            value={selectedComponent.title ?? ''}
+                            onChange={(e) => {
+                              setSelectedComponent({ ...selectedComponent, title: e.target.value })
+                            }}
+                            className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm"
+                          />
+                        </div>
+
+                        {/* Ítems */}
+                        <div>
+                          <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Ítems:</label>
+                          <ul className="space-y-1 mt-2">
+                            {selectedComponent.items.map((item, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={item.checked}
+                                  onChange={(e) => {
+                                    const newItems = [...selectedComponent.items]
+                                    newItems[idx].checked = e.target.checked
+                                    setSelectedComponent({ ...selectedComponent, items: newItems })
+                                  }}
+                                />
+                                <input
+                                  value={item.label}
+                                  onChange={(e) => {
+                                    const newItems = [...selectedComponent.items]
+                                    newItems[idx].label = e.target.value
+                                    setSelectedComponent({ ...selectedComponent, items: newItems })
+                                  }}
+                                  className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm"
+                                />
+                                <button
+                                  className="text-red-500 hover:text-red-700"
+                                  onClick={() => {
+                                    const newItems = [...selectedComponent.items]
+                                    newItems.splice(idx, 1)
+                                    setSelectedComponent({ ...selectedComponent, items: newItems })
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* Botón para agregar ítem */}
+                          <button
+                            onClick={() => {
+                              const newItems = [...selectedComponent.items, { label: 'Nuevo ítem', checked: false }]
+                              setSelectedComponent({ ...selectedComponent, items: newItems })
+                            }}
+                            className="mt-3 text-sm text-blue-600 hover:underline"
+                          >
+                            + Agregar ítem
+                          </button>
+                        </div>
+                        <div className='h-72'>
+                        </div>
+                      </div>
+                    )}
+                    {selectedComponent.type === 'radiobutton' && (
+                      <div className="space-y-3">
+                        {/* Grupo name */}
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-gray-600 dark:text-gray-300 w-28">Grupo:</label>
+                          <input
+                            value={selectedComponent.name ?? ''}
+                            onChange={(e) => {
+                              setSelectedComponent({ ...selectedComponent, name: e.target.value })
+                            }}
+                            className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm"
+                          />
+                        </div>
+
+                        {/* Opciones */}
+                        <div>
+                          <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Opciones:</label>
+                          <ul className="space-y-1 mt-1">
+                            {selectedComponent.options.map((opt, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <input
+                                  type="radio"
+                                  name={selectedComponent.name}
+                                  checked={selectedComponent.selected === opt}
+                                  onChange={() => {
+                                    setSelectedComponent({ ...selectedComponent, selected: opt })
+                                  }}
+                                />
+                                <input
+                                  value={opt}
+                                  onChange={(e) => {
+                                    const newOpts = [...selectedComponent.options]
+                                    newOpts[idx] = e.target.value
+                                    setSelectedComponent({ ...selectedComponent, options: newOpts })
+                                  }}
+                                  className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                                />
+                                <button
+                                  className="text-red-500 hover:text-red-700"
+                                  onClick={() => {
+                                    const newOpts = [...selectedComponent.options]
+                                    newOpts.splice(idx, 1)
+                                    setSelectedComponent({ ...selectedComponent, options: newOpts })
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <button
+                            onClick={() => {
+                              setSelectedComponent({
+                                ...selectedComponent,
+                                options: [...selectedComponent.options, 'Nueva opción']
+                              })
+                            }}
+                            className="mt-2 text-sm text-blue-600 hover:underline"
+                          >
+                            + Agregar opción
+                          </button>
+                        </div>
+                        <div className='h-72'>
                         </div>
                       </div>
                     )}
 
+                    {selectedComponent.type === 'select' && (
+                      <div className="space-y-3">
+                        {/* Valor por defecto */}
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-gray-600 dark:text-gray-300 w-28">Valor:</label>
+                          <input
+                            value={selectedComponent.value ?? ''}
+                            onChange={(e) => {
+                              setSelectedComponent({ ...selectedComponent, value: e.target.value })
+                            }}
+                            className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                          />
+                        </div>
+
+                        {/* Lista de opciones */}
+                        <div>
+                          <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Opciones:</label>
+                          <ul className="space-y-1 mt-1">
+                            {selectedComponent.options.map((opt, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <input
+                                  value={opt}
+                                  onChange={(e) => {
+                                    const newOpts = [...selectedComponent.options]
+                                    newOpts[idx] = e.target.value
+                                    setSelectedComponent({ ...selectedComponent, options: newOpts })
+                                  }}
+                                  className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                                />
+                                <button
+                                  className="text-red-500 hover:text-red-700"
+                                  onClick={() => {
+                                    const newOpts = [...selectedComponent.options]
+                                    newOpts.splice(idx, 1)
+                                    setSelectedComponent({ ...selectedComponent, options: newOpts })
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* Botón para agregar opción */}
+                          <button
+                            onClick={() => {
+                              setSelectedComponent({
+                                ...selectedComponent,
+                                options: [...selectedComponent.options, 'Nueva opción']
+                              })
+                            }}
+                            className="mt-2 text-sm text-blue-600 hover:underline"
+                          >
+                            + Agregar opción
+                          </button>
+                        </div>
+                        <div className='h-72'>
+                        </div>
+                      </div>
+                    )}
                     {selectedComponent?.type === 'listar' && (
                       <div className="space-y-6">
                       {/* Herramientas Básicas */}
@@ -1481,7 +1707,7 @@ export default function RightSidebar() {
                             </button>
                           </div>
                         </div>
-                        <div className='h-52'>
+                        <div className='h-72'>
                         </div>
                       </div>
                     )}

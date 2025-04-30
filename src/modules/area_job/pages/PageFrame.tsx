@@ -536,6 +536,74 @@ export default function PageFrame({
                         </div>
                       </div>
                   )
+                case 'select':
+                  return (
+                      <select
+                        className={cn(comp.styles)}
+                        value={comp.value}
+                        onChange={(e) => {
+                          const updated = { ...comp, value: e.target.value }
+                          setSelectedComponent(updated)
+                        }}
+                      >
+                        {comp.options.map((opt, i) => (
+                          <option key={i} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                  )
+                case 'checklist':
+                  return (
+                      <div
+                        className={cn(comp.styles)}
+                        style={{
+                          width: '100%',
+                          height: '100%'
+                        }}
+                      >
+                        {comp.title && (
+                          <h3 className="font-semibold text-lg mb-2">{comp.title}</h3>
+                        )}
+                        <ul className="space-y-1">
+                          {comp.items.map((item, idx) => (
+                            <li key={idx} className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={item.checked}
+                                onChange={(e) => {
+                                  const updatedItems = [...comp.items]
+                                  updatedItems[idx].checked = e.target.checked
+                                  setSelectedComponent({ ...comp, items: updatedItems })
+                                }}
+                              />
+                              <span className={item.checked ? 'line-through text-gray-500' : ''}>
+                                {item.label}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                  )
+                case 'radiobutton':
+                  return (
+                      <div className={cn(comp.styles)}>
+                        {comp.options.map((opt, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name={comp.name}
+                              value={opt}
+                              checked={comp.selected === opt}
+                              onChange={() => {
+                                const updated = { ...comp, selected: opt }
+                                setSelectedComponent(updated)
+                              }}
+                            />
+                            <label>{opt}</label>
+                          </div>
+                        ))}
+                      </div>
+                  )
+
                 case 'login':
                   return (
                       <div
